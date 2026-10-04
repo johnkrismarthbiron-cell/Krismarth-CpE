@@ -2,6 +2,38 @@ from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
+
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, value):
+        node = Node(value)
+        if self.head is None:
+            self.head = node
+            return
+
+        current = self.head
+        while current.next is not None:
+            current = current.next
+        current.next = node
+
+    def values(self):
+        current = self.head
+        while current is not None:
+            yield current.value
+            current = current.next
+
+    def total(self):
+        return sum(self.values())
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -17,6 +49,38 @@ def works():
         input_string = request.form.get('inputString', '')
         result = input_string.upper()
     return render_template('touppercase.html', result=result)
+
+
+@app.route('/works/linked-list', methods=['GET', 'POST'])
+def linked_list_calculator():
+    values = None
+    result = None
+    error = None
+    input_values = ''
+
+    if request.method == 'POST':
+        input_values = request.form.get('values', '').strip()
+        try:
+            numbers = [float(value.strip()) for value in input_values.split(',') if value.strip()]
+            if not numbers:
+                raise ValueError
+
+            linked_list = LinkedList()
+            for number in numbers:
+                linked_list.append(number)
+            values = list(linked_list.values())
+            result = linked_list.total()
+        except ValueError:
+            error = 'Enter one or more numbers separated by commas.'
+
+    return render_template(
+        'linked_list.html',
+        values=values,
+        result=result,
+        error=error,
+        input_values=input_values,
+    )
+
 
 @app.route('/works/area/circle', methods=['GET', 'POST'])
 def acircle():

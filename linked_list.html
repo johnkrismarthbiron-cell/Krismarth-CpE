@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linked List Sum | Krismarth's Website</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="linked-list-page">
+    <header class="site-header">
+        <nav class="container nav">
+            <div class="brand">Krismarth's Website</div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/profile">Profile</a>
+                <a href="/works">Works</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <p class="eyebrow">Data structure tool</p>
+                    <h1>Linked List Sum</h1>
+                    <p class="lead">Enter numbers to build a singly linked list and compute the sum of its nodes.</p>
+                    <div class="cta-group">
+                        <a class="btn btn-primary" href="/works">Back to Works</a>
+                    </div>
+                </div>
+                <div class="hero-card">
+                    <div class="card-topline">
+                        <span class="dot"></span>
+                        <span>Node chain</span>
+                    </div>
+                    <div class="orbital-visual">
+                        <div class="ring ring-one"></div>
+                        <div class="ring ring-two"></div>
+                        <div class="core"></div>
+                    </div>
+                    <ul>
+                        <li>Each value becomes a node</li>
+                        <li>Nodes link in input order</li>
+                        <li>The total is computed by traversal</li>
+                    </ul>
+                    <div class="mini-tag">head → next → null</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features container">
+            <div class="section-heading">
+                <p class="eyebrow">Calculator</p>
+                <h2>Build the list and total its values</h2>
+            </div>
+            <div class="feature-grid">
+                <article class="feature-card linked-list-card">
+                    <form action="/works/linked-list" method="post">
+                        <label for="values">Numbers, separated by commas</label>
+                        <input type="text" id="values" name="values" value="{{ input_values }}" placeholder="e.g. 4, 8, 15, 16" required>
+                        <button type="submit" class="btn btn-primary">Compute sum</button>
+                    </form>
+
+                    {% if error %}
+                    <p class="linked-list-error" role="alert">{{ error }}</p>
+                    {% endif %}
+
+                    {% if values is not none %}
+                    <div class="linked-list-result" aria-live="polite">
+                        <h3>Linked list</h3>
+                        <div class="linked-list-chain" aria-label="Linked list values">
+                            {% for value in values %}
+                            <span class="linked-list-node">{{ value }}</span>
+                            {% if not loop.last %}<span class="linked-list-arrow" aria-hidden="true">→</span>{% endif %}
+                            {% endfor %}
+                            <span class="linked-list-arrow" aria-hidden="true">→</span>
+                            <span class="linked-list-null">null</span>
+                        </div>
+                        <p class="linked-list-total">Sum: <strong>{{ result }}</strong></p>
+                    </div>
+                    {% endif %}
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>© 2026 Krismarth's Website</p>
+            <a href="/contact">Contact us</a>
+        </div>
+    </footer>
+
+    <div id="cursor-snake"></div>
+    <div class="meteor-layer" aria-hidden="true">
+        <span class="meteor meteor-one"></span>
+        <span class="meteor meteor-two"></span>
+    </div>
+    <div id="engineer-cursor" aria-hidden="true">
+        <span class="engineer-head"></span>
+        <span class="engineer-hair"></span>
+        <span class="engineer-glasses"></span>
+        <span class="engineer-eye left"></span>
+        <span class="engineer-eye right"></span>
+        <span class="engineer-visor"></span>
+        <span class="engineer-mouth"></span>
+    </div>
+
+    <script>
+        const trailContainer = document.getElementById('cursor-snake');
+        const engineerCursor = document.getElementById('engineer-cursor');
+        const symbols = ['π', 'Ω', 'α', 'β', 'γ', 'Δ', 'Σ', '∫', '∂', 'λ', 'µ', 'θ'];
+        const particles = [];
+
+        const createParticle = (x, y) => {
+            const particle = document.createElement('span');
+            particle.className = 'cursor-number';
+            particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            trailContainer.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 850);
+
+            return particle;
+        };
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let targetX = mouseX;
+        let targetY = mouseY;
+
+        document.addEventListener('mousemove', (event) => {
+            targetX = event.clientX;
+            targetY = event.clientY;
+            particles.push({ x: targetX, y: targetY });
+            if (particles.length > 22) particles.shift();
+        });
+
+        function animate() {
+            mouseX += (targetX - mouseX) * 0.28;
+            mouseY += (targetY - mouseY) * 0.28;
+
+            engineerCursor.style.left = `${mouseX}px`;
+            engineerCursor.style.top = `${mouseY}px`;
+
+            if (particles.length > 0) {
+                const current = particles[particles.length - 1];
+                const particle = createParticle(current.x, current.y);
+                particle.style.opacity = '0.92';
+                particle.style.transform = 'translate(-50%, -50%) scale(1)';
+
+                for (let i = 0; i < particles.length - 1; i++) {
+                    const p = particles[i];
+                    p.x += (particles[i + 1].x - p.x) * 0.22;
+                    p.y += (particles[i + 1].y - p.y) * 0.22;
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

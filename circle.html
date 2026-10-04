@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Area Calculator | Krismarth's Portfolio Website</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="container nav">
+            <div class="brand">Krismarth's Portfolio Website</div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/profile">Profile</a>
+                <a href="/works">Works</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <p class="eyebrow">Geometry tool</p>
+                    <h1>Circle Area Calculator</h1>
+                    <p class="lead">
+                        Compute the area of a circle using the radius and the standard circular area formula.
+                    </p>
+                    <div class="cta-group">
+                        <a class="btn btn-primary" href="/works">Back to Works</a>
+                        <a class="btn btn-secondary" href="/works/area/triangle">Triangle Calculator</a>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div class="card-topline">
+                        <span class="dot"></span>
+                        <span>Formula</span>
+                    </div>
+                    <div class="orbital-visual">
+                        <div class="ring ring-one"></div>
+                        <div class="ring ring-two"></div>
+                        <div class="core"></div>
+                    </div>
+                    <ul>
+                        <li>Radius value</li>
+                        <li>Multiply by π</li>
+                        <li>Square the radius</li>
+                    </ul>
+                    <div class="mini-tag">A = πr²</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features container">
+            <div class="section-heading">
+                <p class="eyebrow">Calculator</p>
+                <h2>Compute the circle area</h2>
+            </div>
+
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <form action="/works/area/circle" method="post">
+                        <label for="radius">Enter a radius:</label>
+                        <input type="number" step="any" id="radius" name="radius" required style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid rgba(125, 211, 252, 0.4); background: rgba(7, 17, 31, 0.7); color: #edf6ff;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Compute</button>
+                    </form>
+
+                    {% if result %}
+                    <p style="margin-top: 18px;">Area of the circle: {{ result }}</p>
+
+                    <div class="area-chart" role="img" aria-label="Bar graph visualization of the computed circle area">
+                        <div class="area-chart-bars">
+                            <div class="area-chart-column">
+                                <div class="area-chart-bar" style="height: {{ [[(result / 10) * 100, 100] | min, 10] | max }}%; background: linear-gradient(180deg, #67e8f9, #38bdf8); box-shadow: 0 0 18px rgba(103, 232, 249, 0.5);"></div>
+                            </div>
+                            <div class="area-chart-column">
+                                <div class="area-chart-bar" style="height: {{ [[(result / 10) * 85, 100] | min, 10] | max }}%; background: linear-gradient(180deg, #a78bfa, #7c3aed); box-shadow: 0 0 18px rgba(124, 58, 237, 0.45);"></div>
+                            </div>
+                            <div class="area-chart-column">
+                                <div class="area-chart-bar" style="height: {{ [[(result / 10) * 95, 100] | min, 10] | max }}%; background: linear-gradient(180deg, #4ade80, #10b981); box-shadow: 0 0 18px rgba(74, 222, 128, 0.45);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>© 2026 Krismarth's Portfolio Website</p>
+            <a href="/contact">Contact us</a>
+        </div>
+    </footer>
+
+    <div id="cursor-snake"></div>
+        <div class="meteor-layer" aria-hidden="true">
+            <span class="meteor meteor-one"></span>
+            <span class="meteor meteor-two"></span>
+        </div>
+        <div id="cursor-snake"></div>
+    <div id="engineer-cursor" aria-hidden="true">
+        <span class="engineer-head"></span>
+        <span class="engineer-hair"></span>
+        <span class="engineer-glasses"></span>
+        <span class="engineer-eye left"></span>
+        <span class="engineer-eye right"></span>
+        <span class="engineer-visor"></span>
+        <span class="engineer-mouth"></span>
+    </div>
+
+    <script>
+        const trailContainer = document.getElementById('cursor-snake');
+        const engineerCursor = document.getElementById('engineer-cursor');
+        const symbols = ['π', 'Ω', 'α', 'β', 'γ', 'Δ', 'Σ', '∫', '∂', 'λ', 'µ', 'θ'];
+        const particles = [];
+
+        const createParticle = (x, y) => {
+            const particle = document.createElement('span');
+            particle.className = 'cursor-number';
+            particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            trailContainer.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 850);
+
+            return particle;
+        };
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let targetX = mouseX;
+        let targetY = mouseY;
+
+        document.addEventListener('mousemove', (event) => {
+            targetX = event.clientX;
+            targetY = event.clientY;
+            particles.push({ x: targetX, y: targetY });
+            if (particles.length > 22) particles.shift();
+        });
+
+        function animate() {
+            mouseX += (targetX - mouseX) * 0.28;
+            mouseY += (targetY - mouseY) * 0.28;
+
+            engineerCursor.style.left = `${mouseX}px`;
+            engineerCursor.style.top = `${mouseY}px`;
+
+            if (particles.length > 0) {
+                const current = particles[particles.length - 1];
+                const particle = createParticle(current.x, current.y);
+                particle.style.opacity = '0.92';
+                particle.style.transform = 'translate(-50%, -50%) scale(1)';
+
+                for (let i = 0; i < particles.length - 1; i++) {
+                    const p = particles[i];
+                    p.x += (particles[i + 1].x - p.x) * 0.22;
+                    p.y += (particles[i + 1].y - p.y) * 0.22;
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Works | Krismarth's Website</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="container nav">
+            <div class="brand">Krismarth's Website</div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/profile">Profile</a>
+                <a href="/works">Works</a>
+                <a href="/contact">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <p class="eyebrow">Works & tools</p>
+                    <h1>Build, test, and shape ideas.</h1>
+                    <p class="lead">
+                        Here are a few quick tools and experiments built around practical engineering and design thinking.
+                        Each one turns a concept into something functional and measurable.
+                    </p>
+                    <div class="cta-group">
+                        <a class="btn btn-primary" href="/works/area/triangle">Try Triangle Calculator</a>
+                        <a class="btn btn-secondary" href="/works/area/circle">Area of Circle</a>
+                        <a class="btn btn-secondary" href="/works/linked-list">Linked List Sum</a>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div class="card-topline">
+                        <span class="dot"></span>
+                        <span>Utility tools</span>
+                    </div>
+                    <div class="orbital-visual">
+                        <div class="ring ring-one"></div>
+                        <div class="ring ring-two"></div>
+                        <div class="core"></div>
+                    </div>
+                    <ul>
+                        <li>Uppercase converter</li>
+                        <li>Triangle calculator</li>
+                        <li>Circle area function</li>
+                        <li>Linked list sum</li>
+                    </ul>
+                    <div class="mini-tag">Science + Design</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats container">
+            <div class="stat-box">
+                <strong>1</strong>
+                <span>text utility</span>
+            </div>
+            <div class="stat-box">
+                <strong>2</strong>
+                <span>area tools</span>
+            </div>
+            <div class="stat-box">
+                <strong>∞</strong>
+                <span>creative ideas</span>
+            </div>
+        </section>
+
+        <section class="features container">
+            <div class="section-heading">
+                <p class="eyebrow">Quick tools</p>
+                <h2>Small computations, practical results</h2>
+            </div>
+
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <h3>Uppercase Converter</h3>
+                    <form action="/works" method="post">
+                        <label for="inputString">Enter a string:</label>
+                        <input type="text" id="inputString" name="inputString" style="width: 100%; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid rgba(125, 211, 252, 0.4); background: rgba(7, 17, 31, 0.7); color: #edf6ff;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Convert</button>
+                    </form>
+                    {% if result %}
+                    <p style="margin-top: 18px;">Converted string: {{ result }}</p>
+                    {% endif %}
+                </article>
+
+                <article class="feature-card">
+                    <h3>Area of Triangle</h3>
+                    <p>Calculate the area using the standard formula: A = 1/2 × base × height.</p>
+                    <a href="/works/area/triangle" class="btn btn-secondary">Open calculator</a>
+                </article>
+
+                <article class="feature-card">
+                    <h3>Area of Circle</h3>
+                    <p>Calculate the area using the standard formula: A = πr².</p>
+                    <a href="/works/area/circle" class="btn btn-secondary">Open calculator</a>
+                </article>
+
+                <article class="feature-card">
+                    <h3>Linked List Sum</h3>
+                    <p>Build a singly linked list from numbers and compute the sum of its nodes.</p>
+                    <a href="/works/linked-list" class="btn btn-secondary">Open calculator</a>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>© 2026 Krismarth's Website</p>
+            <a href="/contact">Contact us</a>
+        </div>
+    </footer>
+
+    <div id="cursor-snake"></div>
+        <div class="meteor-layer" aria-hidden="true">
+            <span class="meteor meteor-one"></span>
+            <span class="meteor meteor-two"></span>
+        </div>
+        <div id="cursor-snake"></div>
+    <div id="engineer-cursor" aria-hidden="true">
+        <span class="engineer-head"></span>
+        <span class="engineer-hair"></span>
+        <span class="engineer-glasses"></span>
+        <span class="engineer-eye left"></span>
+        <span class="engineer-eye right"></span>
+        <span class="engineer-visor"></span>
+        <span class="engineer-mouth"></span>
+    </div>
+
+    <script>
+        const trailContainer = document.getElementById('cursor-snake');
+        const engineerCursor = document.getElementById('engineer-cursor');
+        const symbols = ['π', 'Ω', 'α', 'β', 'γ', 'Δ', 'Σ', '∫', '∂', 'λ', 'µ', 'θ'];
+        const particles = [];
+
+        const createParticle = (x, y) => {
+            const particle = document.createElement('span');
+            particle.className = 'cursor-number';
+            particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            trailContainer.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 850);
+
+            return particle;
+        };
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let targetX = mouseX;
+        let targetY = mouseY;
+
+        document.addEventListener('mousemove', (event) => {
+            targetX = event.clientX;
+            targetY = event.clientY;
+            particles.push({ x: targetX, y: targetY });
+            if (particles.length > 22) particles.shift();
+        });
+
+        function animate() {
+            mouseX += (targetX - mouseX) * 0.28;
+            mouseY += (targetY - mouseY) * 0.28;
+
+            engineerCursor.style.left = `${mouseX}px`;
+            engineerCursor.style.top = `${mouseY}px`;
+
+            if (particles.length > 0) {
+                const current = particles[particles.length - 1];
+                const particle = createParticle(current.x, current.y);
+                particle.style.opacity = '0.92';
+                particle.style.transform = 'translate(-50%, -50%) scale(1)';
+
+                for (let i = 0; i < particles.length - 1; i++) {
+                    const p = particles[i];
+                    p.x += (particles[i + 1].x - p.x) * 0.22;
+                    p.y += (particles[i + 1].y - p.y) * 0.22;
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
